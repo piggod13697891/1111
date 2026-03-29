@@ -74,7 +74,6 @@ button:hover{background:rgba(52, 152, 219,1);}
     </div>
 </div>
 <script>
-// 初始化本地存储数据（兼容首次访问无数据的情况）
 if(!localStorage.posts) localStorage.posts = JSON.stringify([]);
 if(!localStorage.replies) localStorage.replies = JSON.stringify([]);
 if(!localStorage.users) localStorage.users = JSON.stringify([]);
@@ -83,8 +82,6 @@ const users = JSON.parse(localStorage.users);
 const posts = JSON.parse(localStorage.posts);
 const replies = JSON.parse(localStorage.replies);
 let user = null;
-
-// 页面切换核心函数：新增切换到home时强制重新渲染
 function go(page){
     document.querySelectorAll(".page").forEach(p=>p.classList.remove("show"));
     document.getElementById(page).classList.add("show");
@@ -95,7 +92,6 @@ function go(page){
         renderMine();
     }
 }
-
 function login(){
     const n = document.getElementById("name").value.trim();
     const p = document.getElementById("pwd").value.trim();
@@ -121,7 +117,6 @@ function login(){
         setTimeout(()=>go("home"), 500);
     }
 }
-
 function logout(){
     user = null;
     go("login");
