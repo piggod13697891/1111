@@ -129,8 +129,6 @@ function logout(){
     user = null;
     go("login");
 }
-
-// 发布帖子：修复数据存储逻辑，确保数据正确写入
 function sendPost(){
     if(!user){
         go("login");
@@ -138,14 +136,11 @@ function sendPost(){
     }
     const c = document.getElementById("content").value.trim();
     const f = document.getElementById("img").files[0];
-    if(!c && !f) return; // 空内容不发布
-
+    if(!c && !f) return;
     const reader = new FileReader();
     reader.onload = function(e){
         const imgData = e.target.result;
-        // 生成唯一ID（时间戳+随机数，避免重复）
         const postId = Date.now() + Math.floor(Math.random()*1000);
-        // 帖子数据：包含发布者信息、时间、内容、图片
         const newPost = {
             id: postId,
             user: user.name,
@@ -153,19 +148,13 @@ function sendPost(){
             img: imgData,
             time: new Date().toLocaleString()
         };
-        // 存入帖子数组
         posts.unshift(newPost);
-        // 同步到本地存储
         localStorage.posts = JSON.stringify(posts);
-        // 清空输入框
         document.getElementById("content").value = "";
         document.getElementById("img").value = "";
-        // 重新渲染帖子列表
         renderPosts();
     };
-    // 读取图片数据
     if(f) reader.readAsDataURL(f);
-    // 无图片时也发布文本内容
     else{
         const postId = Date.now() + Math.floor(Math.random()*1000);
         const newPost = {
@@ -181,16 +170,12 @@ function sendPost(){
         renderPosts();
     }
 }
-
-// 渲染所有帖子：遍历所有帖子，展示给所有用户
 function renderPosts(){
     const box = document.getElementById("posts");
     box.innerHTML = "";
-    // 遍历**所有**帖子，而非只筛选当前用户
     posts.forEach(post => {
         const div = document.createElement("div");
         div.className = "post";
-        // 修复图片标签语法错误：移除< img 中的空格
         const imgHtml = post.img ? `< img src="${post.img}">` : "";
         div.innerHTML = `
             <div><strong>${post.user}</strong> · ${post.time}</div>
@@ -202,12 +187,9 @@ function renderPosts(){
             <div id="replyBox-${post.id}" class="replyList"></div>
         `;
         box.appendChild(div);
-        // 渲染该帖子的所有回复
         renderReply(post.id);
     });
 }
-
-// 发布回复：修复数据存储逻辑
 function sendReply(pid){
     if(!user){
         go("login");
@@ -216,7 +198,6 @@ function sendReply(pid){
     const c = document.querySelector(`.rContent-${pid}`).value.trim();
     const f = document.querySelector(`.rImg-${pid}`).files[0];
     if(!c && !f) return;
-
     const reader = new FileReader();
     reader.onload = function(e){
         const imgData = e.target.result;
@@ -229,10 +210,8 @@ function sendReply(pid){
         };
         replies.unshift(newReply);
         localStorage.replies = JSON.stringify(replies);
-        // 清空输入框
         document.querySelector(`.rContent-${pid}`).value = "";
         document.querySelector(`.rImg-${pid}`).value = "";
-        // 重新渲染回复
         renderReply(pid);
     };
     if(f) reader.readAsDataURL(f);
@@ -250,12 +229,9 @@ function sendReply(pid){
         renderReply(pid);
     }
 }
-
-// 渲染回复：遍历该帖子的所有回复
 function renderReply(pid){
     const box = document.getElementById(`replyBox-${pid}`);
     box.innerHTML = "";
-    // 遍历**所有**该帖子的回复
     replies.filter(r => r.pid === pid).forEach(r => {
         const div = document.createElement("div");
         div.className = "reply";
@@ -264,8 +240,6 @@ function renderReply(pid){
         box.appendChild(div);
     });
 }
-
-// 渲染个人页面：筛选当前用户的帖子和回复
 function renderMine(){
     if(!user){
         go("login");
@@ -282,8 +256,6 @@ function renderMine(){
         return `<div class="reply">${r.time}<br>${r.content}${imgHtml}</div>`;
     }).join("");
 }
-
-// 页面加载时默认渲染首页
 go("home");
 </script>
 </body>
