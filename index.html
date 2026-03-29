@@ -34,7 +34,6 @@ button:hover{background:rgba(52, 152, 219,1);}
 .post,.reply{padding:15px;background:rgba(255,255,255,0.85);border-radius:10px;margin:10px 0;box-shadow:0 3px 6px rgba(0,0,0,0.05);}
 .reply{margin-left:25px;background:rgba(255,255,255,0.7);}
 .post strong,.reply strong{color:#3498db;}
-/* 修复图片显示问题 */
 .post img,.reply img{max-width:200px;margin:10px 0;border-radius:8px;box-shadow:0 2px 4px rgba(0,0,0,0.1);display:block;}
 .tip{color:#7f8c8d;font-size:14px;margin-top:8px;}
 </style>
@@ -89,11 +88,9 @@ let user = null;
 function go(page){
     document.querySelectorAll(".page").forEach(p=>p.classList.remove("show"));
     document.getElementById(page).classList.add("show");
-    // 切换到首页时，强制重新渲染所有帖子（解决看不到他人帖子的核心问题）
     if(page === "home"){
         renderPosts();
     }
-    // 切换到我的页面时，渲染个人数据
     if(page === "mine"){
         renderMine();
     }
